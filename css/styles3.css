@@ -1,0 +1,489 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #113048;
+    color: #ecf0f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+
+}
+
+.container {
+    display: grid;
+    grid-template-areas: "header header" "sidebar main";
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 60px 1fr;
+    width: 100%;
+    height: 100%;
+    min-height: 80vh;
+    background: linear-gradient(180deg, #E5E5E5 0%, #7F7F7F 100%);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Header --- */
+.header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border: 1px solid #000;
+    background: linear-gradient(0deg, #393F42 0%, #393F42 100%);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.30);
+    border-bottom: 1px solid #4a6572;
+    
+}
+
+.logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+
+}
+.logo {
+    display: flex;
+    gap: 140px;
+}
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #91A1A8;
+    padding: 5px 10px;
+    border-radius: 20px;
+    width: 300px;
+}
+
+.search-bar i {
+    color: #393F42;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ecf0f1;
+    margin-left: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.search-bar input::placeholder {
+    color: #393F42;
+}
+
+.title h1 {
+    font-family: Inter, sans-serif;
+    font-size: 40px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: normal;
+    background: linear-gradient(90deg, #FFF 37%, #FF8B80 58%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+.title h1 strong {
+    font-weight: 700;
+}
+
+
+
+.menu-icon i {
+    font-size: 24px;
+    color: #bdc3c7;
+    cursor: pointer;
+}
+
+/* ====== BOTÃO MENU TOGGLE ====== */
+.menu-toggle {
+    display: block;
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-top: 2%;
+
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    background-color: #91A1A8;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    overflow-y: auto;
+    grid-area: sidebar;
+    border-right: 1px solid #4a6572;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    scrollbar-width: thin;
+    scrollbar-color: #bdc3c7 transparent;
+    position: fixed;
+    top: 70px; /* sempre abaixo do header fixo */
+    left: 0;
+    width: 240px;
+    height: calc(100% - 70px);
+    transform: translateX(0);
+    transition: 0.4s ease-in-out;
+}
+
+
+.sidebar a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    width: 100%;
+}
+
+.sidebar nav ul li {
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 210px;
+    height: 50px;
+    background: #91A1A8;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: 0.5s;
+    
+}
+
+.sidebar nav ul li a {
+    color: #ecf0f1;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+    
+}
+
+
+.sidebar nav ul li:hover {
+    background-color: #5b7c8d !important;
+    transform: translateX(5px);
+    transform: translateY(3px);
+    box-shadow: 0 0px 0px #91A1A8 !important;
+    
+}
+
+.add-button i {
+    font-size: 36px;
+    color: #bdc3c7;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+}
+
+.add-button i:hover {
+    color: #fff;
+}
+
+.sidebar.closed {
+    transform: translateX(-100%);
+}
+
+/* ====== LINKS SIDEBAR ====== */
+.sidebar nav ul {
+    list-style: none;
+}
+
+/* --- Main Content --- */
+.main-content {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+    transition: margin-left 0.4s ease-in-out;
+}
+
+.main-content ul {
+    list-style: none;
+    padding: 0;
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.main-content li {
+    flex: 1 1 calc(33% - 20px);
+    border-radius: 10px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    cursor: pointer;
+    /* cursor de link */
+    padding: 0;
+    /* padding agora no <a> */
+}
+
+.main-content li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.main-content li a {
+    display: flex;
+    /* ocupa todo o li */
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(90deg, #91A1A8 0%, #113048 100%);
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background 0.2s;
+    text-align: center;
+}
+
+.main-content li a:hover {
+    background: linear-gradient(90deg, #5b7c8d 0%, #0f2433 100%);
+}
+
+/* Botão Adicionar módulo */
+.main-content a[href*="Adicionarmodulo.php"] {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 12px 24px;
+    background-color: #1890ff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.main-content a[href*="Adicionarmodulo.php"]:hover {
+    background-color: #e7e7e7;
+}
+
+/* --- Cards placeholder --- */
+.card {
+    background: linear-gradient(90deg, #91A1A8 0%, #113048 100%);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
+    border: 1px solid #000;
+}
+
+.card h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.card p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #d0d3d4;
+}
+
+.card p strong {
+    font-weight: 500;
+    color: #ecf0f1;
+}
+
+.card.placeholder {
+    min-height: 150px;
+}
+
+/* --- Responsividade para telas pequenas --- */
+@media (max-width: 768px) {
+    .search-bar {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .main-content ul {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .main-content li {
+        flex: 1 1 100%;
+    }
+}
+
+/* Container que organiza os cards em uma grade responsiva, como uma tabela */
+.cards-table {
+    display: flex;
+    flex-wrap: wrap;
+    /* Permite que os cards quebrem para a próxima linha em telas menores */
+    gap: 2px;
+    /* Espaço mínimo entre os "células" da tabela */
+    border: 1px solid #333;
+    /* Borda da tabela com cor mais escura */
+    border-radius: 8px;
+    overflow: hidden;
+    /* Garante que os cantos arredondados sejam mantidos */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: #222;
+}
+
+/* Estilo para cada "célula" da tabela */
+.card {
+    flex: 1 1 250px;
+    /* Cresce e encolhe, com largura base de 250px */
+    background-color: #444;
+    padding: 15px;
+    border-right: 1px solid #333;
+    /* Divisor vertical entre os cards */
+    border-bottom: 1px solid #333;
+    /* Divisor horizontal para a última linha */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #fff;
+    /* Cor do texto padrão para branco */
+}
+
+/* Título de cada card (cabeçalho da "coluna") */
+.card h3 {
+    margin: 0;
+    padding-bottom: 10px;
+    font-size: 1.1em;
+    color: white;
+    /* Cor do título para branco */
+    font-weight: bold;
+    border-bottom: 2px solid #0056b3;
+    text-transform: uppercase;
+}
+
+/* Estilo para os dados (linhas da "tabela") */
+.card p {
+    margin: 0;
+    padding: 8px 0;
+    color: #ddd;
+    /* Cor do texto dos dados para um branco mais suave */
+    border-bottom: 1px solid #0056b3;
+    /* Divisor de linha entre os dados */
+}
+
+/* Remove a borda inferior do último dado de cada card */
+.card p:last-of-type {
+    border-bottom: none;
+}
+
+/* Estilo para o link de ação */
+.card a {
+    display: block;
+    width: 100%;
+    /* Ocupa a largura total da "célula" */
+    padding: 10px;
+    margin-top: auto;
+    /* Empurra o link para o final do card */
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.card a:hover {
+    background-color: #0056b3;
+}
+
+.menu-icon i:hover {
+    color: #bdc3c7;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.menu-icon i:hover {
+    color: #fff;
+}
+
+.menu-icon .fa-info-circle {
+    margin-right: 15px;
+}
+
+
+.menu i {
+    font-size: 30px;
+    color: #bdc3c7;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+}
+
+/* ====== RESPONSIVO ====== */
+
+.container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 70px auto;
+    /* header SEMPRE 70px */
+    grid-template-areas:
+        "header"
+        "main";
+}
+
+.menu-toggle {
+    display: block;
+    color: #bdc3c7;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    
+}
+
+/* Header não cresce e não quebra linha */
+.header {
+    height: 70px;
+    min-height: 70px;
+    padding: 0 0.75rem;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    /* impede multi-linha */
+}
+
+/* Para caber tudo no header de 70px: esconde o título e deixa busca flexível */
+
+.sidebar.open {
+     
+     transform: translateX(-100%);
+}
+.sidebar.fechada + .main-content {
+    margin-left: 0;
+}
