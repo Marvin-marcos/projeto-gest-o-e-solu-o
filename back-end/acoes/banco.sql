@@ -68,3 +68,9 @@ CREATE TABLE imagens (
     id_empresa INT NOT NULL,
     CONSTRAINT fk_imagens_empresa FOREIGN KEY (id_empresa) REFERENCES empresa(id)
 ) ENGINE=InnoDB;
+CREATE TABLE vendas_flexivel (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_empresa INT,
+    dados_venda JSON,
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id)
+);
