@@ -11,6 +11,12 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../dao/CampoDAO.php';
+require_once __DIR__ . '/../model/Campo.php';
+
+$campoDAO = new CampoDAO();
+$campo = $campoDAO->buscarCampoPorId($_GET['id_campo'] ?? 0);
+
 if (!isset($_SESSION['token'])) {
     header('Location: ../cadastro/Cadastro.php'); // Redirecionar para a página de cadastro se não estiver autenticado
     exit();
@@ -58,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     
     <form action="Adicionarmodulo.php" method="POST">
-        <h1>Adicionar Modulo</h1>
+        <h1>Adicionar <?= $campo->getNome(); ?></h1>
         <label for="nome">Nome do Modulo:</label>
         <input type="text" id="nome" name="nome" required><br><br>
 

@@ -69,12 +69,18 @@ class CampoDAO{
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        
-        $campo = $stmt->fetchObject('Campo');
-        if ($campo) {
-            return $campo;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return new Campo(
+                (int)$row['id'],
+                $row['nome'],
+                $row['descricao'],
+                (int)$row['nivel'],
+                $row['cor'],
+                (int)$row['id_empresa']
+            );
         } else {
-            return false;
+            return null; // Campo não encontrado
         }
     }
 
