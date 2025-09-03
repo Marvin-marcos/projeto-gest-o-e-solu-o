@@ -297,6 +297,10 @@
     
 }
 
+.profile-title{
+    margin-bottom: 15px;
+}
+
 .profile-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

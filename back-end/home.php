@@ -43,11 +43,15 @@ $empresa = $empresaDAO->buscarEmpresaPorId($_SESSION['id_empresa']);
 $cards = [];
 $modulos = [];
 $dados = [];
+$modulo = [];
 
 
 if (isset($_GET['id'])) {
     $id_campo = $_GET['id'];
     $modulos = $moduloDAO->listarModulosPorCampo($id_campo, $_SESSION['id_empresa']);
+}
+if (isset($_GET['id_modulo'])){
+    $modulo = $moduloDAO->getById($_GET['id_modulo']);
 }
 
 $logoPath = ($logo && file_exists($logo->getCaminho()))
@@ -125,7 +129,7 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
             <div class="cards-table">
                 <?php if(isset($_GET['id_modulo'])): ?>
                     <div class="profile-box">
-                        <h2 class="profile-title"><?= $campo->getNome(); ?></h2>
+                        <h2 class="profile-title"><?= $modulo->getNome(); ?></h2>
                         <div class="profile-grid">
                             <div class="profile-group">
                                 <label for="nome">Nome</label>
@@ -163,11 +167,7 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
             <?php if (isset($_GET['id'])): ?>
                 <a href="acoes/Adicionarmodulo.php?id_campo=<?= $_GET['id']; ?>">Adicionar</a>
             <?php endif; ?>
-            <!-- adicionar tabela -->
-
-            <?php if (isset($_GET['id_tabela'])): ?>
-                <a href="acoes/Addcard.php?id_tabela=<?= $_GET['id_tabela'] ?>">Adicionar</a>
-            <?php endif; ?>
+        
 
         </main>
     </div>

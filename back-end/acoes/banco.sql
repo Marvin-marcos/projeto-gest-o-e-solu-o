@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS gestao;
 USE gestao;
 
 -- Tabela de Empresas
-CREATE TABLE empresa (
+CREATE TABLE IF NOT EXISTS empresa (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE empresa (
 ) ENGINE=InnoDB;
 
 -- Tabela de Campos (depende da empresa)
-CREATE TABLE campo (
+CREATE TABLE IF NOT EXISTS campo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     descricao TEXT,
@@ -25,7 +25,7 @@ CREATE TABLE campo (
 ) ENGINE=InnoDB;
 
 -- Tabela de Módulos (depende do campo e da empresa)
-CREATE TABLE modulo (
+CREATE TABLE IF NOT EXISTS modulo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     id_campo INT NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE modulo (
 ) ENGINE=InnoDB;
 
 -- Tabela de Valores
-CREATE TABLE valor (
+CREATE TABLE IF NOT EXISTS valor (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     valor DECIMAL(10,2) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE valor (
 ) ENGINE=InnoDB;
 
 -- Tabela de Cards
-CREATE TABLE cards (
+CREATE TABLE IF NOT EXISTS cards (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     id_modulo INT NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE cards (
 ) ENGINE=InnoDB;
 
 -- Tabela de Dados
-CREATE TABLE dados (
+CREATE TABLE IF NOT EXISTS dados (
     id INT AUTO_INCREMENT PRIMARY KEY,
     valor VARCHAR(255) NOT NULL,
     id_card INT NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE dados (
 ) ENGINE=InnoDB;
 
 -- Tabela de Imagens
-CREATE TABLE imagens (
+CREATE TABLE IF NOT EXISTS imagens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     caminho VARCHAR(255) NOT NULL,
@@ -68,29 +68,33 @@ CREATE TABLE imagens (
     id_empresa INT NOT NULL,
     CONSTRAINT fk_imagens_empresa FOREIGN KEY (id_empresa) REFERENCES empresa(id)
 ) ENGINE=InnoDB;
-CREATE TABLE vendas_flexivel (
+
+-- Tabela de Vendas Flexível
+CREATE TABLE IF NOT EXISTS vendas_flexivel (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_empresa INT,
     dados_venda JSON,
     FOREIGN KEY (id_empresa) REFERENCES empresa(id)
-);
-CREATE TABLE submodulo (
+) ENGINE=InnoDB;
+
+-- Tabela de Submódulos
+CREATE TABLE IF NOT EXISTS submodulo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     id_modulo INT NOT NULL,
     FOREIGN KEY (id_modulo) REFERENCES modulo(id)
 ) ENGINE=InnoDB;
 
--- Tabela 2: Item do submódulo (com nome)
-CREATE TABLE item_submodulo (
+-- Tabela de Item do Submódulo
+CREATE TABLE IF NOT EXISTS item_submodulo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     id_submodulo INT NOT NULL,
     FOREIGN KEY (id_submodulo) REFERENCES submodulo(id)
 ) ENGINE=InnoDB;
 
--- Tabela 3: Valor do submódulo (com valor int)
-CREATE TABLE valor_submodulo (
+-- Tabela de Valor do Submódulo
+CREATE TABLE IF NOT EXISTS valor_submodulo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     valor INT NOT NULL,
     id_submodulo INT NOT NULL,
