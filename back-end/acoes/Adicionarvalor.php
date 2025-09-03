@@ -16,7 +16,19 @@
 //     FOREIGN KEY (id_submodulo) REFERENCES submodulo(id)
 // ) ENGINE=InnoDB;
 
+require_once __DIR__ .'/../model/Valor.php';
+require_once __DIR__ .'/../dao/ValorDAO.php';
 
+if ($_SERVER['REQUEST_METHOD'] === "POST"){
+    $id_submodulo = $_POST['id_submodulo'];
+    $valor = $_POST["valor"];
+    $textoounumero = $_POST["textoounumero"];
+
+    $valordao = new ValorDAO();
+
+    if ($textoounumero == ""){
+    }
+}
 
 
 ?>
@@ -29,13 +41,14 @@
 </head>
 <body>
     <form action="Adicionarvalor.php" method="POST">
-        <input type="number" value="<?= $_GET['id_submodulo'] ?>">
+        <input type="number" name="id_submodulo" value="<?= $_GET['id_submodulo'] ?>">
         <label for="valor">Digite o Valor</label>
         <input type="text" name="valor">
         <select name="textoounumero" id="textoounumero">
             <option value="numero">Numero</option>
             <option value="Texto">Texto</option>
         </select>
+        <button type="submit">Salvar</button>
 
 
     </form>
