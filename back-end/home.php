@@ -44,12 +44,7 @@ $cards = [];
 $modulos = [];
 $dados = [];
 
-if (isset($_GET['id_tabela'])) {
-    $id_modulo = $_GET['id_tabela'];
-    $cards = $cardsDAO->listarCardsPorModulo($id_modulo);
-} else {
-    $modulos = $moduloDAO->listarModulosPorEmpresa($_SESSION['id_empresa']);
-}
+
 if (isset($_GET['id'])) {
     $id_campo = $_GET['id'];
     $modulos = $moduloDAO->listarModulosPorCampo($id_campo, $_SESSION['id_empresa']);
@@ -72,6 +67,8 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
     <title>Gestão & Solução</title>
     <link rel="stylesheet" href="../css/styles3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/graficos.css">
+
 </head>
 
 <body>
@@ -120,21 +117,45 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
             <!-- modulos -->
             <ul>
                 <?php foreach ($modulos as $modulo): ?>
-                    <li><a href="?id_tabela=<?= $modulo->getId(); ?>"><?= $modulo->getNome(); ?></a></li>
+                    <li><a href="?id_modulo=<?= $modulo->getId(); ?>"><?= $modulo->getNome(); ?></a></li>
                 <?php endforeach; ?>
             </ul>
 
             <!-- cards -->
             <div class="cards-table">
-                <?php foreach ($cards as $card): ?>
-                    <div class="card">
-                        <h3><?= $card->getTitulo(); ?></h3>
-                        <?php foreach ($dadosDAO->buscarDadosPorCard($card->getId()) as $dado): ?>
-                            <p><?= $dado->getValor(); ?></p>
-                        <?php endforeach; ?>
-                        <a href="acoes/Adddados.php?id_card=<?= $card->getId() ?>&id_tabela=<?= $_GET['id_tabela'] ?>">Adicionar</a>
+                <?php if(isset($_GET['id_modulo'])): ?>
+                    <div class="profile-box">
+                        <h2 class="profile-title"><?= $campo->getNome(); ?></h2>
+                        <div class="profile-grid">
+                            <div class="profile-group">
+                                <label for="nome">Nome</label>
+                                <input type="text" id="nome" value="Herbert" readonly>
+                            </div>
+                            <div class="profile-group">
+                                <label for="funcao">Função</label>
+                                <input type="text" id="funcao" value="Entregador" readonly>
+                            </div>
+                            <div class="profile-group">
+                                <label for="email">Gmail</label>
+                                <input type="email" id="email" value="Herbert@gamil.com" readonly>
+                            </div>
+                            <div class="profile-group">
+                                <label for="salario">Salário</label>
+                                <input type="text" id="salario" value="R$: 2.000,00" readonly>
+                            </div>
+                            <div class="profile-group">
+                                <label for="contato">Contato</label>
+                                <input type="tel" id="contato" value="11 1234 1234" readonly>
+                            </div>
+                        </div>
+                        <a href="acoes/Adicionarsubmodulo.php?id_modulo=<?= $_GET['id_modulo']; ?>"><button class="profile-edit-button">Editar</button></a>
+                        
                     </div>
-                <?php endforeach; ?>
+                    <div class="chart-container">
+                        <h2 class="chart-title">Gráfico de Vendas</h2>
+                        <canvas id="myChart"></canvas>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <!-- adicionar campo -->
@@ -150,13 +171,90 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
 
         </main>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const toggleBtn = document.querySelector(".menu-toggle");
-        const sidebar = document.querySelector(".sidebar");
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const main = document.querySelector('.main-content');
 
-        toggleBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
+            if (!toggleBtn || !sidebar || !main) return; // se faltar algo, sai sem erro
+
+            toggleBtn.addEventListener('click', (e) => {
+                // alterna a classe que seu CSS utiliza: "closed"
+                sidebar.classList.toggle('closed');
+
+                // fallback: ajusta margem do main via inline style caso o selector ~ não funcione
+                if (sidebar.classList.contains('closed')) {
+                    main.style.marginLeft = '0';
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                } else {
+                    main.style.marginLeft = ''; // retorna ao valor do CSS (margin-left: 240px)
+                    toggleBtn.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            // opcional: fecha o sidebar ao clicar fora (útil em mobile)
+            document.addEventListener('click', (evt) => {
+                if (window.innerWidth <= 768) {
+                    const target = evt.target;
+                    if (!sidebar.contains(target) && !toggleBtn.contains(target) && !sidebar.classList.contains('closed')) {
+                        sidebar.classList.add('closed');
+                        main.style.marginLeft = '';
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+        });
+
+        // graficos 
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio','ugsg','uhuhu','ghughuh','hhi'],
+                    datasets: [{
+                        label: 'Vendas',
+                        data: [50, 19, 3, 5, 2,17,8,54,2,12,45,78],
+                        backgroundColor: 'rgba(255, 139, 128, 0.7)',
+                        borderColor: 'rgba(255, 139, 128, 1)',
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: "#fff"
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: "#fff"
+                            },
+                            grid: {
+                                color: "rgba(255,255,255,0.2)"
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: "#fff"
+                            },
+                            grid: {
+                                color: "rgba(255,255,255,0.2)"
+                            }
+                        }
+                    }
+                }
+            });
         });
     </script>
 

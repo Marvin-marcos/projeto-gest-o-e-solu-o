@@ -52,7 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
+
 ?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,8 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input hidden name="id_empresa" value="<?=$_SESSION['id_empresa']; ?>">
 
         <input type="submit" value="Adicionar Modulo">
-
+    
     </form>
-
 </body>
 </html>

@@ -74,3 +74,25 @@ CREATE TABLE vendas_flexivel (
     dados_venda JSON,
     FOREIGN KEY (id_empresa) REFERENCES empresa(id)
 );
+CREATE TABLE submodulo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    id_modulo INT NOT NULL,
+    FOREIGN KEY (id_modulo) REFERENCES modulo(id)
+) ENGINE=InnoDB;
+
+-- Tabela 2: Item do submódulo (com nome)
+CREATE TABLE item_submodulo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    id_submodulo INT NOT NULL,
+    FOREIGN KEY (id_submodulo) REFERENCES submodulo(id)
+) ENGINE=InnoDB;
+
+-- Tabela 3: Valor do submódulo (com valor int)
+CREATE TABLE valor_submodulo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    valor INT NOT NULL,
+    id_submodulo INT NOT NULL,
+    FOREIGN KEY (id_submodulo) REFERENCES submodulo(id)
+) ENGINE=InnoDB;
