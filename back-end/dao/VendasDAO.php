@@ -65,4 +65,26 @@ class VendasDAO
             return [];
         }
     }
+
+
+    function getSubmodulosComItens(int $id_modulo): array {
+    $sql = "
+        SELECT 
+            s.id AS id_submodulo,
+            s.nome AS nome_submodulo,
+            s.id_modulo,
+            i.id AS id_item,
+            i.nome AS nome_item
+        FROM submodulo s
+        LEFT JOIN item_submodulo i ON s.id = i.id_submodulo
+        WHERE s.id_modulo = :id_modulo
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bindValue(':id_modulo', $id_modulo, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

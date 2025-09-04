@@ -5,7 +5,7 @@ class Valor {
     private int $id_submodulo; // referência para submódulo
 
     // Construtor
-    public function __construct(string|int $valor, int $id_submodulo, ?int $id = null) {
+    public function __construct(?int $id = null ,string|int $valor, int $id_submodulo, ) {
         $this->valor = $valor;
         $this->id_submodulo = $id_submodulo;
         $this->id = $id;

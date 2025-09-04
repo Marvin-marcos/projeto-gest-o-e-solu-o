@@ -20,12 +20,14 @@ require_once __DIR__ . '/dao/EmpresaDAO.php';
 require_once __DIR__ . '/model/Empresa.php';
 require_once __DIR__ . '/dao/ImagemController.php';
 require_once __DIR__ . '/model/Logo.php';
+require_once __DIR__ . '/dao/SubModuloDAO.php';
+require_once __DIR__ . '/model/SubModulo.php';
 
 
 
 
 
-
+$submoduloDAO = new SubmoduloDAO();
 $camposDAO = new CampoDAO();
 $dadosDAO = new DadosDAO();
 $cardsDAO = new CardDAO();
@@ -40,6 +42,7 @@ $empresa = $empresaDAO->buscarEmpresaPorId($_SESSION['id_empresa']);
 
 
 
+
 $cards = [];
 $modulos = [];
 $dados = [];
@@ -50,7 +53,7 @@ if (isset($_GET['id'])) {
     $id_campo = $_GET['id'];
     $modulos = $moduloDAO->listarModulosPorCampo($id_campo, $_SESSION['id_empresa']);
 }
-if (isset($_GET['id_modulo'])){
+if (isset($_GET['id_modulo'])) {
     $modulo = $moduloDAO->getById($_GET['id_modulo']);
 }
 
@@ -127,33 +130,22 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
 
             <!-- cards -->
             <div class="cards-table">
-                <?php if(isset($_GET['id_modulo'])): ?>
+                <?php if (isset($_GET['id_modulo'])): ?>
                     <div class="profile-box">
                         <h2 class="profile-title"><?= $modulo->getNome(); ?></h2>
                         <div class="profile-grid">
-                            <div class="profile-group">
-                                <label for="nome">Nome</label>
-                                <input type="text" id="nome" value="Herbert" readonly>
-                            </div>
-                            <div class="profile-group">
-                                <label for="funcao">Função</label>
-                                <input type="text" id="funcao" value="Entregador" readonly>
-                            </div>
-                            <div class="profile-group">
-                                <label for="email">Gmail</label>
-                                <input type="email" id="email" value="Herbert@gamil.com" readonly>
-                            </div>
-                            <div class="profile-group">
-                                <label for="salario">Salário</label>
-                                <input type="text" id="salario" value="R$: 2.000,00" readonly>
-                            </div>
-                            <div class="profile-group">
-                                <label for="contato">Contato</label>
-                                <input type="tel" id="contato" value="11 1234 1234" readonly>
-                            </div>
+                            <?php $submodulos = $submoduloDAO->getSubmodulosComItens($_GET['id_modulo']);
+                            ?>
+                            
+                            <?php foreach ($submodulos as $subModulo): ?>
+                                <div class="profile-group">
+                                    <label for="nome"><?= $subModulo->getNomeSubmodulo(); ?></label>
+                                    <input type="text" id="nome" value="<?= $subModulo->getNomeItem(); ?>" readonly>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                         <a href="acoes/Adicionarsubmodulo.php?id_modulo=<?= $_GET['id_modulo']; ?>"><button class="profile-edit-button">Editar</button></a>
-                        
+
                     </div>
                     <div class="chart-container">
                         <h2 class="chart-title">Gráfico de Vendas</h2>
@@ -167,7 +159,7 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
             <?php if (isset($_GET['id'])): ?>
                 <a href="acoes/Adicionarmodulo.php?id_campo=<?= $_GET['id']; ?>">Adicionar</a>
             <?php endif; ?>
-        
+
 
         </main>
     </div>
@@ -216,12 +208,12 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio','ugsg','uhuhu','ghughuh','hhi'],
+                    labels: ['rodrigo', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'ugsg', 'uhuhu', 'ghughuh', 'hhi'],
                     datasets: [{
                         label: 'Vendas',
-                        data: [50, 19, 3, 5, 2,17,8,54,2,12,45,78],
-                        backgroundColor: 'rgba(255, 139, 128, 0.7)',
-                        borderColor: 'rgba(255, 139, 128, 1)',
+                        data: [100, 19, 3, 5, 2, 17, 8, 54, 2, 12, 45, 78],
+                        backgroundColor: 'rgba(216, 18, 0, 0.7)',
+                        borderColor: 'rgb(214, 18, 0)',
                         borderWidth: 2,
                         borderRadius: 5
                     }]

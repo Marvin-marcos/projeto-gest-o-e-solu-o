@@ -1,6 +1,8 @@
 <?php
-require_once '../model/Submodulo.php';
-require_once '../database/database.php';
+require_once __DIR__. '/../model/SubModulo.php';
+require_once __DIR__.  '/../database/database.php';
+require_once __DIR__. '/../model/valorModelo.php';
+
 
 class SubmoduloDAO
 {
@@ -80,4 +82,39 @@ class SubmoduloDAO
         }
         return $result;
     }
+
+    function getSubmodulosComItens( int $id_modulo): array {
+    $sql = "
+        SELECT 
+            s.id AS id_submodulo,
+            s.nome AS nome_submodulo,
+            s.id_modulo,
+            i.id AS id_item,
+            i.nome AS nome_item
+        FROM submodulo s
+        LEFT JOIN item_submodulo i ON s.id = i.id_submodulo
+        WHERE s.id_modulo = :id_modulo
+        ORDER BY s.id, i.id
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bindValue(':id_modulo', $id_modulo, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $submodulosItens = [];
+
+    foreach ($rows as $row) {
+        $submodulosItens[] = new SubmoduloItem(
+            $row['id_submodulo'],
+            $row['nome_submodulo'],
+            $row['id_modulo'],
+            $row['id_item'] ?? null,
+            $row['nome_item'] ?? null
+        );
+    }
+
+    return $submodulosItens;
+}
+
 }

@@ -77,13 +77,6 @@ CREATE TABLE IF NOT EXISTS vendas_flexivel (
     FOREIGN KEY (id_empresa) REFERENCES empresa(id)
 ) ENGINE=InnoDB;
 
--- Tabela de Submódulos
-CREATE TABLE IF NOT EXISTS submodulo (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    id_modulo INT NOT NULL,
-    FOREIGN KEY (id_modulo) REFERENCES modulo(id)
-) ENGINE=InnoDB;
 
 -- Tabela de Item do Submódulo
 CREATE TABLE IF NOT EXISTS item_submodulo (
@@ -92,6 +85,16 @@ CREATE TABLE IF NOT EXISTS item_submodulo (
     id_submodulo INT NOT NULL,
     FOREIGN KEY (id_submodulo) REFERENCES submodulo(id)
 ) ENGINE=InnoDB;
+
+
+-- Tabela de Submódulos
+CREATE TABLE IF NOT EXISTS submodulo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    id_modulo INT NOT NULL,
+    FOREIGN KEY (id_modulo) REFERENCES modulo(id)
+) ENGINE=InnoDB;
+
 
 -- Tabela de Valor do Submódulo
 CREATE TABLE IF NOT EXISTS valor_submodulo (
