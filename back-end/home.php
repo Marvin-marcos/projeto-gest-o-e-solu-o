@@ -136,7 +136,7 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
                         <div class="profile-grid">
                             <?php $submodulos = $submoduloDAO->getSubmodulosComItens($_GET['id_modulo']);
                             ?>
-                            
+
                             <?php foreach ($submodulos as $subModulo): ?>
                                 <div class="profile-group">
                                     <label for="nome"><?= $subModulo->getNomeSubmodulo(); ?></label>
@@ -203,53 +203,58 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
         // graficos 
 
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const ctx = document.getElementById('myChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['rodrigo', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'ugsg', 'uhuhu', 'ghughuh', 'hhi'],
-                    datasets: [{
-                        label: 'Vendas',
-                        data: [100, 19, 3, 5, 2, 17, 8, 54, 2, 12, 45, 78],
-                        backgroundColor: 'rgba(216, 18, 0, 0.7)',
-                        borderColor: 'rgb(214, 18, 0)',
-                        borderWidth: 2,
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: "#fff"
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: "#fff"
-                            },
-                            grid: {
-                                color: "rgba(255,255,255,0.2)"
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                color: "#fff"
-                            },
-                            grid: {
-                                color: "rgba(255,255,255,0.2)"
-                            }
-                        }
+       <?php
+$submodulos = $submoduloDAO->getSubmodulosComItens($_GET['id_modulo']);
+$labels = [];
+$data = [];
+
+foreach ($submodulos as $submodulo) {
+    if (is_numeric($submodulo->getNomeItem())) {
+        $labels[] = $submodulo->getNomeSubmodulo();
+        $data[] = $submodulo->getNomeItem();
+    }
+}
+?>
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: <?= json_encode($labels) ?>,
+            datasets: [{
+                label: 'Vendas',
+                data: <?= json_encode($data) ?>,
+                backgroundColor: 'rgba(216, 18, 0, 0.7)',
+                borderColor: 'rgb(214, 18, 0)',
+                borderWidth: 2,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#fff"
                     }
                 }
-            });
-        });
-    </script>
-
+            },
+            scales: {
+                x: {
+                    ticks: { color: "#fff" },
+                    grid: { color: "rgba(255,255,255,0.2)" }
+                },
+                y: {
+                    ticks: { color: "#fff" },
+                    grid: { color: "rgba(255,255,255,0.2)" }
+                }
+            }
+        }
+    });
+});
+</script>
 
 </body>
 
