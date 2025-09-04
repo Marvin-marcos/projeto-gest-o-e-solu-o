@@ -2,12 +2,11 @@
 
 session_start();
 
-
 if (!isset($_SESSION['token'])) {
-    header('Location: cadastro/Cadastro.php'); // Redirecionar para a página de cadastro se não estiver autenticado
+    header('Location: cadastro/Cadastro.php');
     exit();
-    echo "Você não está autenticado. Por favor, faça o cadastro.";
 }
+
 require_once __DIR__ . '/dao/CampoDAO.php';
 require_once __DIR__ . '/model/Campo.php';
 require_once __DIR__ . '/dao/ModuloDAO.php';
@@ -22,12 +21,11 @@ require_once __DIR__ . '/dao/ImagemController.php';
 require_once __DIR__ . '/model/Logo.php';
 require_once __DIR__ . '/dao/SubModuloDAO.php';
 require_once __DIR__ . '/model/SubModulo.php';
-
-
-
-
+require_once __DIR__ . '/dao/ValorDAO.php';
+require_once __DIR__ . '/model/Valor.php';
 
 $submoduloDAO = new SubmoduloDAO();
+$valorDAO = new ValorDAO();
 $camposDAO = new CampoDAO();
 $dadosDAO = new DadosDAO();
 $cardsDAO = new CardDAO();
@@ -35,35 +33,56 @@ $moduloDAO = new ModuloDAO();
 $empresaDAO = new EmpresaDAO();
 $logoController = new ImagemController();
 
-
 $logo = $logoController->getImagemPorEmpresa($_SESSION['id_empresa']);
 $campos = $camposDAO->listarCamposPorEmpresa($_SESSION['id_empresa']);
 $empresa = $empresaDAO->buscarEmpresaPorId($_SESSION['id_empresa']);
-
-
-
 
 $cards = [];
 $modulos = [];
 $dados = [];
 $modulo = [];
-
+$submodulosComValores = []; // array que vai armazenar submodulos com valores somados
 
 if (isset($_GET['id'])) {
     $id_campo = $_GET['id'];
     $modulos = $moduloDAO->listarModulosPorCampo($id_campo, $_SESSION['id_empresa']);
 }
+
 if (isset($_GET['id_modulo'])) {
     $modulo = $moduloDAO->getById($_GET['id_modulo']);
+
+    // Puxar todos os submodulos do módulo
+    $submodulos = $submoduloDAO->getPorIdModulo($_GET['id_modulo']);
+
+    // Agrupar e somar valores por submodulo
+    foreach ($submodulos as $submodulo) {
+        $valores = $valorDAO->getBySubModulos($submodulo->getId());
+
+        $somaValores = 0;
+        $textoValores = [];
+        foreach ($valores as $valor) {
+            if (is_numeric($valor->getValor())) {
+                $somaValores += $valor->getValor();
+            } else {
+                $textoValores[] = $valor->getValor();
+            }
+        }
+
+        $submodulosComValores[] = [
+            'nome' => $submodulo->getNome(),
+            'valor' => $somaValores,              // soma valores numéricos
+            'texto' => implode(" | ", $textoValores) // concatena textos
+        ];
+    }
 }
 
+// Logo fallback
 $logoPath = ($logo && file_exists($logo->getCaminho()))
     ? $logo->getCaminho()
     : "https://static.vecteezy.com/ti/vetor-gratis/p1/5538023-forma-simples-montanha-preto-branco-circulo-logo-simbolo-icone-design-grafico-ilustracao-ideia-criativo-vetor.jpg";
 
-
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -128,31 +147,45 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
                 <?php endforeach; ?>
             </ul>
 
-            <!-- cards -->
             <div class="cards-table">
                 <?php if (isset($_GET['id_modulo'])): ?>
                     <div class="profile-box">
                         <h2 class="profile-title"><?= $modulo->getNome(); ?></h2>
-                        <div class="profile-grid">
-                            <?php $submodulos = $submoduloDAO->getSubmodulosComItens($_GET['id_modulo']);
-                            ?>
 
-                            <?php foreach ($submodulos as $subModulo): ?>
+                        <div class="profile-grid">
+                            <?php
+                            // Puxa todos os submódulos do módulo
+                            $submodulos = $submoduloDAO->getPorIdModulo($_GET['id_modulo']);
+
+                            foreach ($submodulos as $submodulo):
+                                // Puxa todos os valores/itens do submodulo
+                                $valores = $valorDAO->getBySubModulos($submodulo->getId());
+                            ?>
                                 <div class="profile-group">
-                                    <label for="nome"><?= $subModulo->getNomeSubmodulo(); ?></label>
-                                    <input type="text" id="nome" value="<?= $subModulo->getNomeItem(); ?>" readonly>
+                                    <label for="nome"><?= $submodulo->getNome(); ?></label>
+                                    <input type="text" id="nome" value="<?php
+                                                                        $valoresText = [];
+                                                                        foreach ($valores as $valor) {
+                                                                            $valoresText[] = $valor->getValor();
+                                                                        }
+                                                                        echo implode(" | ", $valoresText); // separa itens com "|"
+                                                                        ?>" readonly>
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        <a href="acoes/Adicionarsubmodulo.php?id_modulo=<?= $_GET['id_modulo']; ?>"><button class="profile-edit-button">Editar</button></a>
 
+                        <a href="acoes/Adicionarsubmodulo.php?id_modulo=<?= $_GET['id_modulo']; ?>">
+                            <button class="profile-edit-button">Editar</button>
+                        </a>
                     </div>
+
                     <div class="chart-container">
-                        <h2 class="chart-title">Gráfico de Vendas</h2>
+                        <h2 class="chart-title">Gráfico</h2>
                         <canvas id="myChart"></canvas>
                     </div>
                 <?php endif; ?>
             </div>
+
 
             <!-- adicionar campo -->
 
@@ -203,58 +236,77 @@ $logoPath = ($logo && file_exists($logo->getCaminho()))
         // graficos 
 
 
-       <?php
+        <?php
+// Pegar submodulos com itens
 $submodulos = $submoduloDAO->getSubmodulosComItens($_GET['id_modulo']);
-$labels = [];
-$data = [];
+
+// Array para agrupar nomes iguais
+$graficoValores = [];
 
 foreach ($submodulos as $submodulo) {
-    if (is_numeric($submodulo->getNomeItem())) {
-        $labels[] = $submodulo->getNomeSubmodulo();
-        $data[] = $submodulo->getNomeItem();
+    $nome = $submodulo->getNomeSubmodulo();
+    $valor = $submodulo->getNomeItem();
+
+    if (is_numeric($valor)) {
+        if (!isset($graficoValores[$nome])) {
+            $graficoValores[$nome] = 0;
+        }
+        $graficoValores[$nome] += $valor; // soma os valores iguais
     }
 }
+
+// Separar labels e data para o Chart.js
+$labels = array_keys($graficoValores);
+$data = array_values($graficoValores);
 ?>
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const ctx = document.getElementById('myChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: <?= json_encode($labels) ?>,
-            datasets: [{
-                label: 'Vendas',
-                data: <?= json_encode($data) ?>,
-                backgroundColor: 'rgba(216, 18, 0, 0.7)',
-                borderColor: 'rgb(214, 18, 0)',
-                borderWidth: 2,
-                borderRadius: 5
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: "#fff"
+        document.addEventListener("DOMContentLoaded", () => {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: <?= json_encode($labels) ?>,
+                    datasets: [{
+                        label: 'Media',
+                        data: <?= json_encode($data) ?>,
+                        backgroundColor: 'rgba(0, 13, 131, 0.78)',
+                        borderColor: 'rgb(214, 18, 0)',
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: "#fff"
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: "#fff"
+                            },
+                            grid: {
+                                color: "rgba(255,255,255,0.2)"
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: "#fff"
+                            },
+                            grid: {
+                                color: "rgba(255,255,255,0.2)"
+                            }
+                        }
                     }
                 }
-            },
-            scales: {
-                x: {
-                    ticks: { color: "#fff" },
-                    grid: { color: "rgba(255,255,255,0.2)" }
-                },
-                y: {
-                    ticks: { color: "#fff" },
-                    grid: { color: "rgba(255,255,255,0.2)" }
-                }
-            }
-        }
-    });
-});
-</script>
+            });
+        });
+    </script>
 
 </body>
 
